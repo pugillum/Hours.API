@@ -33,7 +33,7 @@ namespace HoursApi.Controllers
             return Ok(results);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetProject")]
         public IActionResult GetProject(int id)
         {
             var project = _hoursApiRepository.GetProject(id);
@@ -77,8 +77,71 @@ namespace HoursApi.Controllers
 
             var createdProjectToReturn = Mapper.Map<Models.ProjectDto>(project);
 
+            _logger.LogInformation("$Project created with id {createdProjectToReturn.Id}.");
+
             return CreatedAtRoute("GetProject", 
                 new { id = createdProjectToReturn.Id }, createdProjectToReturn);
+
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateProject(int id,
+            [FromBody] ProjectForUpdateDto projectForUpdate)
+        {
+            if (projectForUpdate == null)
+            {
+                return BadRequest();
+            }
+
+            //TODO: Test for duplicate name
+            if (projectForUpdate.Description == projectForUpdate.Name)
+            {
+                ModelState.AddModelError("Description", "The provided description should be different from the name.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var projectEntity = _hoursApiRepository.GetProject(id);
+            if (projectEntity == null)
+            {
+                return NotFound();
+            }
+            
+            Mapper.Map(projectForUpdate, projectEntity);
+
+            if (!_hoursApiRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteProject(int id)
+        {
+            if (!_hoursApiRepository.ProjectExists(id))
+            {
+                return NotFound();
+            }
+
+            var projectEntity = _hoursApiRepository.GetProject(id);
+            if (projectEntity == null)
+            {
+                return NotFound();
+            }
+
+            _hoursApiRepository.DeleteProject(projectEntity);
+
+            if (!_hoursApiRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
         }
 
 

@@ -67,6 +67,7 @@ namespace HoursApi
                 cfg.CreateMap<Entities.Project, Models.ProjectDto>();
                 cfg.CreateMap<Models.ProjectForCreationDto, Entities.Project>();
                 cfg.CreateMap<Models.ProjectForUpdateDto, Entities.Project>();
+                cfg.CreateMap<Entities.Project, Models.ProjectForUpdateDto>();
             });
 
             app.UseMvc();

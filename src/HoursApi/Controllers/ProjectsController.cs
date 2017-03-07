@@ -2,6 +2,7 @@
 using HoursApi.Entities;
 using HoursApi.Models;
 using HoursApi.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -111,6 +112,52 @@ namespace HoursApi.Controllers
             }
             
             Mapper.Map(projectForUpdate, projectEntity);
+
+            if (!_hoursApiRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateProject(int id,
+            [FromBody] JsonPatchDocument<ProjectForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            var projectEntity = _hoursApiRepository.GetProject(id);
+            if (projectEntity == null)
+            {
+                return NotFound();
+            }
+
+            var projectToPatch = Mapper.Map<ProjectForUpdateDto>(projectEntity);
+
+            patchDoc.ApplyTo(projectToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (projectToPatch.Description == projectToPatch.Name)
+            {
+                ModelState.AddModelError("Description", "The provided description should be different from the name.");
+            }
+
+            TryValidateModel(projectToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Mapper.Map(projectToPatch, projectEntity);
 
             if (!_hoursApiRepository.Save())
             {

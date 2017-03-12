@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HoursApi.Entities
@@ -15,5 +16,7 @@ namespace HoursApi.Entities
 
         [MaxLength(200)]
         public string Description { get; set; }
+
+        public List<WorkItem> WorkItems { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace HoursApi.Entities
         }
 
         public DbSet<Project> Projects { get; set; }
+        public DbSet<WorkItem> WorkItems { get; set; }
 
         
     }

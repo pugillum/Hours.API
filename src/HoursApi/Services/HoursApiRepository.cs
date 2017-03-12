@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HoursApi.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HoursApi.Services
 {
@@ -17,19 +19,49 @@ namespace HoursApi.Services
             _context.Projects.Add(project);
         }
 
+        public void AddWorkItemForProject(int projectId, WorkItem workItem)
+        {
+            var project = GetProject(projectId, false);
+            project.WorkItems.Add(workItem);
+        }
+
         public void DeleteProject(Project project)
         {
             _context.Projects.Remove(project);
         }
 
-        public Project GetProject(int projectId)
+        public void DeleteWorkItem(WorkItem workItem)
         {
-            return _context.Projects.Where(p => p.Id == projectId).FirstOrDefault();
+            _context.WorkItems.Remove(workItem);
+        }
+
+        public Project GetProject(int projectId, bool includeWorkItems)
+        {
+            if (includeWorkItems)
+            {
+                return _context.Projects.Include(c => c.WorkItems)
+                    .Where(c => c.Id == projectId).FirstOrDefault();
+            } else
+            {
+                return _context.Projects.Where(p => p.Id == projectId).FirstOrDefault();
+            }
         }
 
         public IEnumerable<Project> GetProjects()
         {
             return _context.Projects.OrderBy(p => p.Name).ToList();
+        }
+
+        public WorkItem GetWorkItemForProject(int projectId, int workItemId)
+        {
+            return _context.WorkItems
+               .Where(w => w.ProjectId == projectId && w.Id == workItemId).FirstOrDefault();
+        }
+
+        public IEnumerable<WorkItem> GetWorkItemsForProject(int projectId)
+        {
+            return _context.WorkItems
+                           .Where(w => w.ProjectId == projectId).ToList();
         }
 
         public bool ProjectExists(int projectId)

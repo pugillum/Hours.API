@@ -21,5 +21,10 @@ namespace HoursApi.Entities
 
         [MaxLength(200)]
         public string Description { get; set; }
+
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
+
+        public int ProjectId { get; set; }
     }
 }

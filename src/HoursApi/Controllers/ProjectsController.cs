@@ -35,9 +35,9 @@ namespace HoursApi.Controllers
         }
 
         [HttpGet("{id}", Name = "GetProject")]
-        public IActionResult GetProject(int id)
+        public IActionResult GetProject(int id, bool includeWorkItems = false)
         {
-            var project = _hoursApiRepository.GetProject(id);
+            var project = _hoursApiRepository.GetProject(id,includeWorkItems);
 
             if (project == null)
             {
@@ -105,7 +105,7 @@ namespace HoursApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var projectEntity = _hoursApiRepository.GetProject(id);
+            var projectEntity = _hoursApiRepository.GetProject(id,false);
             if (projectEntity == null)
             {
                 return NotFound();
@@ -130,7 +130,7 @@ namespace HoursApi.Controllers
                 return BadRequest();
             }
 
-            var projectEntity = _hoursApiRepository.GetProject(id);
+            var projectEntity = _hoursApiRepository.GetProject(id,false);
             if (projectEntity == null)
             {
                 return NotFound();
@@ -175,7 +175,7 @@ namespace HoursApi.Controllers
                 return NotFound();
             }
 
-            var projectEntity = _hoursApiRepository.GetProject(id);
+            var projectEntity = _hoursApiRepository.GetProject(id,false);
             if (projectEntity == null)
             {
                 return NotFound();

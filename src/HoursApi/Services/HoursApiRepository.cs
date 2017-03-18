@@ -21,7 +21,7 @@ namespace HoursApi.Services
 
         public void AddWorkItemForProject(int projectId, WorkItem workItem)
         {
-            var project = GetProject(projectId, false);
+            var project = GetProject(projectId, true);
             project.WorkItems.Add(workItem);
         }
 

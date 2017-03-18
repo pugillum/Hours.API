@@ -64,10 +64,15 @@ namespace HoursApi
 
             AutoMapper.Mapper.Initialize(cfg =>
             {
+                cfg.CreateMap<Entities.Project, Models.ProjectWithoutWorkItemsDto>();
                 cfg.CreateMap<Entities.Project, Models.ProjectDto>();
+                cfg.CreateMap<Entities.Project, Models.ProjectForUpdateDto>();
                 cfg.CreateMap<Models.ProjectForCreationDto, Entities.Project>();
                 cfg.CreateMap<Models.ProjectForUpdateDto, Entities.Project>();
-                cfg.CreateMap<Entities.Project, Models.ProjectForUpdateDto>();
+                cfg.CreateMap<Entities.WorkItem, Models.WorkItemDto>();
+                cfg.CreateMap<Models.WorkItemForCreationDto, Entities.WorkItem>();
+                cfg.CreateMap<Models.WorkItemForUpdateDto, Entities.WorkItem>();
+                cfg.CreateMap<Entities.WorkItem, Models.WorkItemForUpdateDto>();
             });
 
             app.UseMvc();

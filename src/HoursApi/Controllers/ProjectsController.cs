@@ -49,15 +49,15 @@ namespace HoursApi.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateProject([FromBody] ProjectForCreationDto projectForCreation)
+        public IActionResult CreateProject([FromBody] ProjectForCreationDto projectForCreationDto)
         {
-            if (projectForCreation == null)
+            if (projectForCreationDto == null)
             {
                 return BadRequest();
             }
 
             //todo: Better validation checks
-            if (projectForCreation.Description == projectForCreation.Name)
+            if (projectForCreationDto.Description == projectForCreationDto.Name)
             {
                 ModelState.AddModelError("Description", "The provided description should be different from the name.");
             }
@@ -67,7 +67,10 @@ namespace HoursApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var project = Mapper.Map<Project>(projectForCreation);
+            var project = Mapper.Map<Project>(projectForCreationDto);
+
+            //todo: Improve this
+            project.WorkItems = new List<WorkItem>();
 
             _hoursApiRepository.AddProject(project);
 

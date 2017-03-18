@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HoursApi.Models
 {
@@ -10,5 +11,6 @@ namespace HoursApi.Models
 
         [MaxLength(200)]
         public string Description { get; set; }
+
     }
 }

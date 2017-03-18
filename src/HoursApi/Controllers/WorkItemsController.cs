@@ -71,10 +71,10 @@ namespace HoursApi.Controllers
         }
 
         [HttpPost("{ProjectId}/WorkItems")]
-        public IActionResult CreateWorkItem(int ProjectId,
-            [FromBody] WorkItemForCreationDto WorkItem)
+        public IActionResult CreateWorkItem(int projectId,
+            [FromBody] WorkItemForCreationDto workItemForCreationDto)
         {
-            if (WorkItem == null)
+            if (workItemForCreationDto == null)
             {
                 return BadRequest();
             }
@@ -84,14 +84,14 @@ namespace HoursApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!_HoursApiRepository.ProjectExists(ProjectId))
+            if (!_HoursApiRepository.ProjectExists(projectId))
             {
                 return NotFound();
             }
 
-            var finalWorkItem = Mapper.Map<Entities.WorkItem>(WorkItem);
+            var finalWorkItem = Mapper.Map<Entities.WorkItem>(workItemForCreationDto);
 
-            _HoursApiRepository.AddWorkItemForProject(ProjectId, finalWorkItem);
+            _HoursApiRepository.AddWorkItemForProject(projectId, finalWorkItem);
 
             if (!_HoursApiRepository.Save())
             {
@@ -101,7 +101,7 @@ namespace HoursApi.Controllers
             var createdWorkItemToReturn = Mapper.Map<Models.WorkItemDto>(finalWorkItem);
 
             return CreatedAtRoute("GetWorkItem", new
-            { ProjectId = ProjectId, id = createdWorkItemToReturn.Id }, createdWorkItemToReturn);
+            { ProjectId = projectId, id = createdWorkItemToReturn.Id }, createdWorkItemToReturn);
         }
 
         [HttpPut("{ProjectId}/WorkItems/{id}")]
